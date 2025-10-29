@@ -7,7 +7,7 @@ import { NotFoundError } from '@/shared/errors/not-found-error'
 import { UserDataBuilder } from '@/User/helpers/user-data-builder'
 import { User } from '@/User/graphql/models/user'
 
-describe( 'UsersPrismaRepository', () => {
+describe( 'DependentsPrismaRepository', () => {
   let module: TestingModule;
   let repository: UsersPrismaRepository;
   const prisma = new PrismaClient();

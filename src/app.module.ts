@@ -7,6 +7,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import path from 'node:path'
 import { AppResolver } from '@/app.resolver'
 import { UserModule } from '@/User/user.module';
+import { DependentsModule } from '@/Dependents/dependents.module'
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UserModule } from '@/User/user.module';
       autoSchemaFile: path.resolve(process.cwd(), './src/schema.gql'),
     }),
     UserModule,
+    DependentsModule,
   ],
   providers: [AppService, AppResolver],
 })

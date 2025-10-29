@@ -1,5 +1,3 @@
-import { User } from '@/User/graphql/models/user'
-
 export type PaginationOutput<Item = any> = {
   items: Item[];
   total: number;

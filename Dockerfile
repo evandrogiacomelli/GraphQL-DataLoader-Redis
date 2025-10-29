@@ -1,5 +1,5 @@
 FROM postgres
-#LABEL User="evandrogiacomelli"
+#LABEL Dependents="evandrogiacomelli"
 
 RUN usermod -u 1000 postgres
 
