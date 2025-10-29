@@ -2,7 +2,7 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Author {
+type User {
   id: ID!
   name: String!
   email: String!
@@ -16,5 +16,5 @@ scalar DateTime
 
 type Query {
   hello: String!
-  authors: [Author!]!
+  users: [User!]!
 }

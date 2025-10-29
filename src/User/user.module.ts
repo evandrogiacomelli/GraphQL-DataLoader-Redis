@@ -1,24 +1,24 @@
 import { Module } from '@nestjs/common';
-import { AuthorsResolver } from './graphql/resolvers/authors.resolver';
+import { UserResolver } from './graphql/resolvers/user.resolver';
 import { DatabaseModule } from '@/database/database.module'
 import { PrismaService } from '@/database/prisma/prisma.service'
-import { AuthorsPrismaRepository } from '@/authors/repositories/authors-prisma.repository'
+import { UsersPrismaRepository } from '@/User/repositories/users-prisma.repository'
 
 @Module({
   imports: [DatabaseModule],
   providers: [
-    AuthorsResolver,
+    UserResolver,
     {
       provide: 'PrismaService',
       useClass: PrismaService,
     },
     {
-      provide: 'AuthorsRepository',
+      provide: 'UsersRepository',
       useFactory: (prisma: PrismaService) => {
-        return new AuthorsPrismaRepository(prisma);
+        return new UsersPrismaRepository(prisma);
       },
       inject: ['PrismaService'],
     }
   ]
 })
-export class AuthorsModule {}
+export class UserModule {}

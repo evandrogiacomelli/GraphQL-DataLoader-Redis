@@ -1,15 +1,15 @@
 import { Query, Resolver } from '@nestjs/graphql'
 import { PrismaService } from '@/database/prisma/prisma.service'
-import { Author } from '@/authors/graphql/models/author'
+import { User } from '@/User/graphql/models/user'
 
-@Resolver(() => Author)
-export class AuthorsResolver {
+@Resolver(() => User)
+export class UserResolver {
   constructor(private prisma: PrismaService) {
 
   }
 
-  @Query(() => [Author])
-  authors() {
+  @Query(() => [User])
+  users() {
     return this.prisma.author.findMany();
   }
 }

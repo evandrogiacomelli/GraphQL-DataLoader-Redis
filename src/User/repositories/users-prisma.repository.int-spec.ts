@@ -1,22 +1,22 @@
 import { beforeEach, describe } from 'node:test'
 import { Test, TestingModule } from '@nestjs/testing'
-import { AuthorsPrismaRepository } from '@/authors/repositories/authors-prisma.repository'
+import { UsersPrismaRepository } from '@/User/repositories/users-prisma.repository'
 import { Prisma, PrismaClient } from '@prisma/client'
 import { execSync } from 'node:child_process'
 import { NotFoundError } from '@/shared/errors/not-found-error'
-import { AuthorDataBuilder } from '@/authors/helpers/author-data-builder'
-import { Author } from '@/authors/graphql/models/author'
+import { UserDataBuilder } from '@/User/helpers/user-data-builder'
+import { User } from '@/User/graphql/models/user'
 
-describe( 'AuthorsPrismaRepository', () => {
+describe( 'UsersPrismaRepository', () => {
   let module: TestingModule;
-  let repository: AuthorsPrismaRepository;
+  let repository: UsersPrismaRepository;
   const prisma = new PrismaClient();
 
   beforeAll( async () => {
     execSync('npm run prisma:migratetest')
     await prisma.$connect();
     module = await Test.createTestingModule({}).compile();
-    repository = new AuthorsPrismaRepository(prisma as any);
+    repository = new UsersPrismaRepository(prisma as any);
   })
 
   beforeEach(async () => {
@@ -36,7 +36,7 @@ describe( 'AuthorsPrismaRepository', () => {
   })
 
   test('should find an author by id', async () => {
-    const data = AuthorDataBuilder({});
+    const data = UserDataBuilder({});
 
     const author = await prisma.author.create({
       data,
@@ -47,7 +47,7 @@ describe( 'AuthorsPrismaRepository', () => {
   })
 
   test('should create an author', async () => {
-    const data = AuthorDataBuilder({});
+    const data = UserDataBuilder({});
 
     const author = await repository.create(data);
 
@@ -62,7 +62,7 @@ describe( 'AuthorsPrismaRepository', () => {
 
 describe('search method', () => {
   const prisma = new PrismaClient();
-  const repository = new AuthorsPrismaRepository(prisma as any);
+  const repository = new UsersPrismaRepository(prisma as any);
 
   beforeEach(async () => {
     await prisma.author.deleteMany();
@@ -76,7 +76,7 @@ describe('search method', () => {
       const timeStamp = createdAt.getTime() + index;
 
       // chama o builder dentro do loop para gerar dados únicos
-      const author = AuthorDataBuilder({});
+      const author = UserDataBuilder({});
 
       data.push({
         ...author,

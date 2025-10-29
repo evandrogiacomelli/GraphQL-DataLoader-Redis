@@ -1,7 +1,7 @@
-import { Author } from '@/authors/graphql/models/author'
+import { User } from '@/User/graphql/models/user'
 import { faker } from '@faker-js/faker'
 
-export function AuthorDataBuilder(props: Partial<Author>): Omit<Author, 'id'> {
+export function UserDataBuilder(props: Partial<User>): Omit<User, 'id'> {
   return {
     name: props.name ?? faker.person.fullName(),
     email: props.email ?? faker.internet.email(),

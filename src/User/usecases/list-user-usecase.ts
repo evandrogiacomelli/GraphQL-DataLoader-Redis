@@ -1,18 +1,18 @@
-import { AuthorOutput } from '@/authors/dto/author-output'
-import { AuthorsPrismaRepository } from '@/authors/repositories/authors-prisma.repository'
+import { UserOutput } from '@/User/dto/user-output'
+import { UsersPrismaRepository } from '@/User/repositories/users-prisma.repository'
 import { SearchInput } from '@/shared/dto/search-input'
 import { PaginationOutput } from '@/shared/dto/pagination-output'
 
 
-export namespace ListAuthorsUsecase {
+export namespace ListUsersUsecase {
   export type Input = SearchInput;
-  export type Output = PaginationOutput<AuthorOutput>;
+  export type Output = PaginationOutput<UserOutput>;
 
   export class UseCase {
-    constructor(private authorsRepository: AuthorsPrismaRepository) {}
+    constructor(private usersRepository: UsersPrismaRepository) {}
 
     async execute(input: Input): Promise<Output> {
-      const searchResult = await this.authorsRepository.search(input);
+      const searchResult = await this.usersRepository.search(input);
       return {
         items: searchResult.items,
         total: searchResult.total,

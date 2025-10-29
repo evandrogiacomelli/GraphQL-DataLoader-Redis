@@ -1,33 +1,37 @@
-import { IAuthorsRepository, SearchParams, SearchResult, } from '@/authors/interfaces/authors.repository'
-import { Author } from '../graphql/models/author'
-import { ICreateAuthor } from '../interfaces/create-author'
+import {
+  IUsersRepository,
+  SearchParams,
+  SearchResult,
+} from '@/User/interfaces/users.repository'
+import { User } from '../graphql/models/user'
+import { ICreateUser } from '../interfaces/create-user'
 import { PrismaService } from '@/database/prisma/prisma.service'
 import { NotFoundError } from '@/shared/errors/not-found-error'
 import { Prisma } from '@prisma/client'
 
-export class AuthorsPrismaRepository implements IAuthorsRepository {
+export class UsersPrismaRepository implements IUsersRepository {
 
   sortableFields: string[] = ['name', 'email', 'createdAt']
 
   constructor(private prisma: PrismaService) {}
 
-  async create(data: ICreateAuthor): Promise<Author> {
+  async create(data: ICreateUser): Promise<User> {
     return await this.prisma.author.create({ data })
   }
 
-  update(author: Author): Promise<Author> {
+  update(user: User): Promise<User> {
     throw new Error('Method not implemented.')
   }
 
-  delete(id: String): Promise<Author> {
+  delete(id: String): Promise<User> {
     throw new Error('Method not implemented.')
   }
 
-  async findById(id: string): Promise<Author> {
+  async findById(id: string): Promise<User> {
     return await this.get(id);
   }
 
-  findByEmail(email: string): Promise<Author> {
+  findByEmail(email: string): Promise<User> {
     throw new Error('Method not implemented.')
   }
 
@@ -49,7 +53,7 @@ export class AuthorsPrismaRepository implements IAuthorsRepository {
       : undefined;
 
     const total = await this.prisma.author.count({ where });
-    const authors = await this.prisma.author.findMany({
+    const users = await this.prisma.author.findMany({
       where,
       orderBy: { [orderByField]: orderByDir },
       skip: (page - 1) * perPage,
@@ -57,7 +61,7 @@ export class AuthorsPrismaRepository implements IAuthorsRepository {
     });
 
     return {
-      items: authors,
+      items: users,
       currentPage: page,
       perPage,
       lastPage: Math.ceil(total / perPage),
@@ -65,14 +69,14 @@ export class AuthorsPrismaRepository implements IAuthorsRepository {
     };
   }
 
-  async get(id: string): Promise<Author> {
-    const author = await this.prisma.author.findUnique( {
+  async get(id: string): Promise<User> {
+    const user = await this.prisma.author.findUnique( {
       where: { id }
     })
-    if (!author) {
-      throw new NotFoundError(`Author with id ${id} not found`)
+    if (!user) {
+      throw new NotFoundError(`User with id ${id} not found`)
     }
-    return author
+    return user
   }
 
 }

@@ -1,28 +1,28 @@
-import { AuthorsPrismaRepository } from '@/authors/repositories/authors-prisma.repository'
+import { UsersPrismaRepository } from '@/User/repositories/users-prisma.repository'
 import { BadRequestError } from '@/shared/errors/bad-request-error'
 import { ConflictError } from '@/shared/errors/conflict-error'
-import { AuthorOutput } from '@/authors/dto/author-output'
+import { UserOutput } from '@/User/dto/user-output'
 
-export namespace CreateAuthorUsecase {
+export namespace CreateUserUsecase {
 
   export type Input = {
     name: string;
     email: string;
   }
 
-  export type Output = AuthorOutput;
+  export type Output = UserOutput;
 
   export class UseCase {
-    constructor(private authorsRepository: AuthorsPrismaRepository) {}
+    constructor(private usersRepository: UsersPrismaRepository) {}
 
     async execute(input: Input): Promise<Output> {
       const { email, name } = input
       if (email || !name) throw new BadRequestError('Please enter a valid email and name.')
 
-      const emailExists = await this.authorsRepository.findByEmail(email)
+      const emailExists = await this.usersRepository.findByEmail(email)
       if (emailExists) throw new ConflictError('Email already exists')
 
-      return await this.authorsRepository.create(input)
+      return await this.usersRepository.create(input)
     }
   }
 

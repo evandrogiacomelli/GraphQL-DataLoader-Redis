@@ -1,4 +1,4 @@
-import { Author } from '@/authors/graphql/models/author'
+import { User } from '@/User/graphql/models/user'
 
 export type PaginationOutput<Item = any> = {
   items: Item[];
