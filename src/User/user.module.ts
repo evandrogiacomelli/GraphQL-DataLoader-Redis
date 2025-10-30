@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UserResolver } from './graphql/resolvers/user.resolver';
+import { UserDependentsResolver, UserResolver } from './graphql/resolvers/user.resolver';
 import { DatabaseModule } from '@/database/database.module'
 import { PrismaService } from '@/database/prisma/prisma.service'
 import { UsersPrismaRepository } from '@/User/repositories/users-prisma.repository'
@@ -9,6 +9,7 @@ import { ListUsersUsecase } from '@/User/usecases/list-user-usecase'
   imports: [DatabaseModule],
   providers: [
     UserResolver,
+    UserDependentsResolver,
     {
       provide: 'PrismaService',
       useClass: PrismaService,
