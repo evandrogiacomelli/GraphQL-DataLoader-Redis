@@ -23,6 +23,6 @@ type Dependents {
 
 type Query {
   hello: String!
-  users: [User!]!
+  users(page: Int, perPage: Int, sort: Int!, sortDir: Int!, filter: Int!): [User!]!
   dependents: [Dependents!]!
 }

@@ -7,7 +7,7 @@ import { SearchUserResult } from '@/User/graphql/models/search-user-result'
 
 @Resolver(() => SearchUserResult)
 export class UserResolver {
-  @Inject('ListUsersUsecase')
+  @Inject(ListUsersUsecase.UseCase)
   private listUserUsecase: ListUsersUsecase.UseCase
 
   @Query(() => [User])
