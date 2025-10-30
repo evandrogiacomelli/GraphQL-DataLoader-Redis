@@ -10,7 +10,7 @@ export class UserResolver {
   @Inject(ListUsersUsecase.UseCase)
   private listUserUsecase: ListUsersUsecase.UseCase
 
-  @Query(() => [User])
+  @Query(() => SearchUserResult)
   users(@Args() { page, perPage, sort, sortDir, filter} : SearchParamsArgs) {
     return this.listUserUsecase.execute({
       page,

@@ -10,13 +10,13 @@ export class SearchParamsArgs {
   @Field( () => Int, { nullable: true })
   perPage?: number;
 
-  @Field( () => Int)
+  @Field( () => String, { nullable: true })
   sort?: string;
 
-  @Field( () => Int)
+  @Field( () => String, { nullable: true })
   sortDir?: 'asc' | 'desc'
 
-  @Field( () => Int)
+  @Field( () => String, { nullable: true })
   filter?: string;
 
 }
