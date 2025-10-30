@@ -4,12 +4,10 @@ import { Dependents } from '@/Dependents/graphql/models/dependents'
 
 @Resolver(() => Dependents)
 export class DependentsResolver {
-  constructor(private prisma: PrismaService) {
-
-  }
+  constructor(private prisma: PrismaService) {}
 
   @Query(() => [Dependents])
   dependents() {
-    return this.prisma.author.findMany();
+    return this.prisma.dependent.findMany();
   }
 }

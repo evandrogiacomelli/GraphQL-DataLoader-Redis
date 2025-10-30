@@ -16,7 +16,7 @@ export class UsersPrismaRepository implements IUsersRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(data: ICreateUser): Promise<User> {
-    return await this.prisma.author.create({ data })
+    return await this.prisma.user.create({ data })
   }
 
   update(user: User): Promise<User> {
@@ -43,7 +43,7 @@ export class UsersPrismaRepository implements IUsersRepository {
     const orderByField = isSortable(sort) ? sort! : 'createdAt';
     const orderByDir: 'asc' | 'desc' = sortDir ?? 'desc';
 
-    const where: Prisma.AuthorWhereInput | undefined = filter
+    const where: Prisma.UserWhereInput | undefined = filter
       ? {
         OR: [
           { name: { contains: filter, mode: 'insensitive' } },
@@ -52,8 +52,8 @@ export class UsersPrismaRepository implements IUsersRepository {
       }
       : undefined;
 
-    const total = await this.prisma.author.count({ where });
-    const users = await this.prisma.author.findMany({
+    const total = await this.prisma.user.count({ where });
+    const users = await this.prisma.user.findMany({
       where,
       orderBy: { [orderByField]: orderByDir },
       skip: (page - 1) * perPage,
@@ -70,7 +70,7 @@ export class UsersPrismaRepository implements IUsersRepository {
   }
 
   async get(id: string): Promise<User> {
-    const user = await this.prisma.author.findUnique( {
+    const user = await this.prisma.user.findUnique( {
       where: { id }
     })
     if (!user) {

@@ -8,6 +8,7 @@ export namespace CreateDependentsUsecase {
   export type Input = {
     name: string;
     email: string;
+    userId: string;
   }
 
   export type Output = DependentsOutput;
