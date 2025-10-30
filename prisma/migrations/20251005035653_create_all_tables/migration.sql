@@ -1,28 +1,27 @@
 -- CreateTable
 CREATE TABLE "User" (
-    "id" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "id" TEXT NOT NULL,
+  "email" TEXT NOT NULL,
+  "name" TEXT NOT NULL,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+  CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Dependents" (
-    "id" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE "Dependent" (
+   "id" TEXT NOT NULL,
+   "email" TEXT NOT NULL,
+   "name" TEXT NOT NULL,
+   "userId" TEXT NOT NULL,
+   "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Dependents_pkey" PRIMARY KEY ("id")
+   CONSTRAINT "Dependent_pkey" PRIMARY KEY ("id"),
+   CONSTRAINT "Dependent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE
 );
 
 -- CreateIndex
--- CREATE UNIQUE INDEX "Author_email_key" ON "Author"("email");
+CREATE UNIQUE INDEX "User_email_key" on "User"("email");
 
 -- CreateIndex
--- CREATE UNIQUE INDEX "Post_slug_key" ON "Post"("slug");
-
--- AddForeignKey
--- ALTER TABLE "Post" ADD CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "Author"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+CREATE UNIQUE INDEX "Dependent_email_key" on "Dependent"("email");
