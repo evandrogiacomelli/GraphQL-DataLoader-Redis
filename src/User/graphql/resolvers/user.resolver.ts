@@ -1,12 +1,12 @@
 import { Query, Resolver } from '@nestjs/graphql'
-import { PrismaService } from '@/database/prisma/prisma.service'
 import { User } from '@/User/graphql/models/user'
+import { Inject } from '@nestjs/common'
+import { ListUsersUsecase } from '@/User/usecases/list-user-usecase'
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private prisma: PrismaService) {
-
-  }
+  @Inject('ListUsersUsecase')
+  private listUserUsecase: ListUsersUsecase.UseCase
 
   @Query(() => [User])
   users() {
