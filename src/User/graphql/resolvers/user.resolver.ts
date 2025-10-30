@@ -3,8 +3,9 @@ import { User } from '@/User/graphql/models/user'
 import { Inject } from '@nestjs/common'
 import { ListUsersUsecase } from '@/User/usecases/list-user-usecase'
 import { SearchParamsArgs } from '@/User/graphql/args/search-params'
+import { SearchUserResult } from '@/User/graphql/models/search-user-result'
 
-@Resolver(() => User)
+@Resolver(() => SearchUserResult)
 export class UserResolver {
   @Inject('ListUsersUsecase')
   private listUserUsecase: ListUsersUsecase.UseCase
