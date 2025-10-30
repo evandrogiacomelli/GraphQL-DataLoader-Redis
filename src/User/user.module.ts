@@ -22,8 +22,8 @@ import { ListUsersUsecase } from '@/User/usecases/list-user-usecase'
     },
     {
       provide: ListUsersUsecase.UseCase,
-      useFactory: (authorsRepository: UsersPrismaRepository)  => {
-        return new ListUsersUsecase.UseCase(authorsRepository)
+      useFactory: (usersRepository: UsersPrismaRepository)  => {
+        return new ListUsersUsecase.UseCase(usersRepository)
       },
       inject: ['UsersRepository'],
     }
