@@ -22,17 +22,9 @@ type User {
   dependents: [Dependents!]
 }
 
-type SearchUserResult {
-  items: [User!]!
-  currentPage: Int!
-  perPage: Int!
-  lastPage: Int!
-  total: Int!
-}
-
 type Query {
   hello: String!
-  users(page: Int, perPage: Int, sort: String, sortDir: String, filter: String): SearchUserResult!
+  users: [User!]!
   user(id: String!): User!
   dependents: [Dependents!]!
 }
