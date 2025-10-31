@@ -6,6 +6,7 @@ import { SearchParamsArgs } from '@/User/graphql/args/search-params'
 import { SearchUserResult } from '@/User/graphql/models/search-user-result'
 import { PrismaService } from '@/database/prisma/prisma.service'
 import { Dependents } from '@/Dependents/graphql/models/dependents'
+import { DependentsLoader } from '@/User/loaders/dependents-loader'
 
 @Resolver()
 export class UserResolver {
@@ -33,10 +34,12 @@ export class UserResolver {
 
 @Resolver(() => User)
 export class UserDependentsResolver {
-  constructor(private prisma: PrismaService) {}
+  //injetando classe loader
+  constructor(private dependentsLoader: DependentsLoader) {}
 
   @ResolveField(() => [Dependents])
   async dependents(@Parent() user: User) {
-    return this.prisma.dependent.findMany({ where: { userId: user.id } });
+    //batchload dos ids
+    return this.dependentsLoader.batchLoad.load(user.id);
   }
 }

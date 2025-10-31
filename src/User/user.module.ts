@@ -4,12 +4,14 @@ import { DatabaseModule } from '@/database/database.module'
 import { PrismaService } from '@/database/prisma/prisma.service'
 import { UsersPrismaRepository } from '@/User/repositories/users-prisma.repository'
 import { ListUsersUsecase } from '@/User/usecases/list-user-usecase'
+import { DependentsLoader } from '@/User/loaders/dependents-loader'
 
 @Module({
   imports: [DatabaseModule],
   providers: [
     UserResolver,
     UserDependentsResolver,
+    DependentsLoader,
     {
       provide: 'PrismaService',
       useClass: PrismaService,
