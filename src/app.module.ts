@@ -8,6 +8,7 @@ import path from 'node:path'
 import { AppResolver } from '@/app.resolver'
 import { UserModule } from '@/User/user.module';
 import { DependentsModule } from '@/Dependents/dependents.module'
+import { CacheModule } from '@/cache/cache.module'
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { DependentsModule } from '@/Dependents/dependents.module'
     }),
     UserModule,
     DependentsModule,
+    CacheModule,
   ],
   providers: [AppService, AppResolver],
 })

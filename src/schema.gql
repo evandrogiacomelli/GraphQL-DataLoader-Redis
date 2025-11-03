@@ -28,3 +28,7 @@ type Query {
   user(id: String!): User!
   dependents: [Dependents!]!
 }
+
+type Mutation {
+  message(message: String!): String!
+}
