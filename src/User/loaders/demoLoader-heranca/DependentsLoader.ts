@@ -3,7 +3,7 @@ import { PrismaService } from '@/database/prisma/prisma.service'
 import { CacheService } from '@/cache/cache.service'
 import { Dependents } from '@/Dependents/graphql/models/dependents'
 import { RevLoader } from '@/User/loaders/demoLoader-heranca/RevLoader'
-import { RedisService } from '@/User/loaders/demoLoader-heranca/RedisBatchLoader'
+import { CacheAdapter } from '@/User/loaders/demoLoader-heranca/CacheAdapter'
 
 @Injectable({ scope: Scope.REQUEST })
 export class DependentsLoader extends RevLoader {
@@ -12,9 +12,9 @@ export class DependentsLoader extends RevLoader {
     private prismaService: PrismaService,
     cacheService: CacheService
   ) {
-    const redisService = new RedisService(cacheService)
+    const cache = new CacheAdapter(cacheService)
 
-    super(redisService, async (userIds) => {
+    super(cache, async (userIds) => {
       const dependents = await prismaService.dependent.findMany({
         where: { userId: { in: [...userIds] } },
       })

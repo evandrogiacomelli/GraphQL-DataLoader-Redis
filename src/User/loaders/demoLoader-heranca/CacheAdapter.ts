@@ -1,7 +1,7 @@
 import { CacheService } from '@/cache/cache.service'
 import { Dependents } from '@/Dependents/graphql/models/dependents'
 
-export class RedisService {
+export class CacheAdapter {
   constructor(private cacheService: CacheService) {}
 
   async load(key: string): Promise<Dependents[] | null> {
