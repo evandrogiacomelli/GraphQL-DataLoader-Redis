@@ -1,5 +1,5 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql'
-import { Dependents } from '@/Dependents/graphql/models/dependents'
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Dependents } from '@/modules/dependent/graphql/models/dependents';
 
 @ObjectType()
 export class User {
@@ -13,7 +13,7 @@ export class User {
   email: string;
 
   @Field()
-  createdAt: Date
+  createdAt: Date;
 
   @Field(() => [Dependents], { nullable: true })
   dependents?: Dependents[];
