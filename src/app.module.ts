@@ -1,14 +1,25 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import path from 'node:path';
+
+import { DatabaseModule } from '@/infrastructure/database/database.module';
+import { CacheModule } from '@/infrastructure/cache/cache.module';
+import { CacheModuleMultiLayer } from '@/infrastructure/cache/cache.module.multi-layer';
+import { MetricsController } from '@/infrastructure/loaders/metrics/MetricsController';
+import { HealthController } from '@/infrastructure/health/health.controller';
+import { JsonPlaceholderModule } from '@/infrastructure/external/jsonplaceholder/jsonplaceholder.module';
+
+import { UserModule } from '@/modules/user/user.module';
+import { DependentModule } from '@/modules/dependent/dependent.module';
+import { PostModule } from '@/modules/post/post.module';
+import { StatsModule } from '@/modules/stats/stats.module';
+import { ProductModule } from '@/modules/product/product.module';
+import { OrderModule } from '@/modules/order/order.module';
+
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config'
-import { DatabaseModule } from './database/database.module';
-import { GraphQLModule } from '@nestjs/graphql'
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
-import path from 'node:path'
-import { AppResolver } from '@/app.resolver'
-import { UserModule } from '@/User/user.module';
-import { DependentsModule } from '@/Dependents/dependents.module'
-import { CacheModule } from '@/cache/cache.module'
+import { AppResolver } from './app.resolver';
 
 @Module({
   imports: [
@@ -19,9 +30,16 @@ import { CacheModule } from '@/cache/cache.module'
       autoSchemaFile: path.resolve(process.cwd(), './src/schema.gql'),
     }),
     UserModule,
-    DependentsModule,
+    DependentModule,
+    PostModule,
+    StatsModule,
+    JsonPlaceholderModule,
+    ProductModule,
+    OrderModule,
     CacheModule,
+    CacheModuleMultiLayer,
   ],
+  controllers: [MetricsController, HealthController],
   providers: [AppService, AppResolver],
 })
 export class AppModule {}

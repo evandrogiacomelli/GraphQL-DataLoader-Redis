@@ -22,13 +22,51 @@ type User {
   dependents: [Dependents!]
 }
 
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+  authorId: String!
+  author: User!
+  createdAt: DateTime!
+}
+
+type UserStats {
+  userId: String!
+  totalPosts: Int!
+  totalDependents: Int!
+  processingTime: Int!
+  calculatedAt: DateTime!
+}
+
+type PlaceholderUser {
+  id: ID!
+  name: String!
+  username: String!
+  email: String!
+  phone: String!
+  website: String!
+}
+
+type PlaceholderPost {
+  id: ID!
+  userId: Int!
+  title: String!
+  body: String!
+  user: PlaceholderUser!
+}
+
 type Query {
   hello: String!
   users: [User!]!
   user(id: String!): User!
   dependents: [Dependents!]!
+  posts: [Post!]!
+  userStats(userId: String!): UserStats!
+  placeholderPosts(ids: [Int!]!): [PlaceholderPost!]!
 }
 
 type Mutation {
   message(message: String!): String!
+  storeParamAsKey(key: String!, value: String!): String!
 }
