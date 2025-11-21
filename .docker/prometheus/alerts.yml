@@ -1,0 +1,57 @@
+groups:
+  - name: loader_alerts
+    interval: 30s
+    rules:
+      - alert: CacheHitRateLow
+        expr: loader_cache_hit_rate < 50
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Cache hit rate baixo no loader {{ $labels.loader }}"
+          description: "Hit rate está em {{ $value }}% (esperado > 50%)"
+
+      - alert: CacheHitRateCritical
+        expr: loader_cache_hit_rate < 20
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Cache hit rate crítico no loader {{ $labels.loader }}"
+          description: "Hit rate está em {{ $value }}% - cache pode estar quebrado"
+
+      - alert: HighLatency
+        expr: loader_avg_latency_ms > 1000
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Latência alta no loader {{ $labels.loader }}"
+          description: "Latência média está em {{ $value }}ms (esperado < 1000ms)"
+
+      - alert: VeryHighLatency
+        expr: loader_avg_latency_ms > 5000
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Latência crítica no loader {{ $labels.loader }}"
+          description: "Latência média está em {{ $value }}ms - possível problema no Redis ou DB"
+
+      - alert: HighDatabaseLoad
+        expr: rate(loader_db_queries_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Muitas queries no banco pelo loader {{ $labels.loader }}"
+          description: "{{ $value }} queries/sec - cache pode não estar funcionando"
+
+      - alert: NoRequests
+        expr: rate(loader_requests_total[5m]) == 0
+        for: 10m
+        labels:
+          severity: info
+        annotations:
+          summary: "Loader {{ $labels.loader }} sem requisições"
+          description: "Nenhuma requisição nos últimos 10 minutos"
