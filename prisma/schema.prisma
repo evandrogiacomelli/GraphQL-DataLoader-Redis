@@ -14,11 +14,15 @@ datasource db {
 }
 
 model User {
-  id        String      @id @default(uuid())
-  email     String      @unique
-  name      String
-  dependents     Dependent[]
-  createdAt DateTime    @default(now())
+  id         String          @id @default(uuid())
+  email      String          @unique
+  name       String
+  dependents Dependent[]
+  posts      Post[]
+  products   Product[]
+  orders     Order[]
+  reviews    ProductReview[]
+  createdAt  DateTime        @default(now())
 }
 
 model Dependent {
@@ -28,5 +32,80 @@ model Dependent {
   user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
   createdAt DateTime    @default(now())
+}
+
+model Post {
+  id        String      @id @default(uuid())
+  title     String
+  content   String
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  createdAt DateTime    @default(now())
+}
+
+model Product {
+  id          String        @id @default(uuid())
+  name        String
+  description String
+  price       Decimal       @db.Decimal(10, 2)
+  stock       Int
+  sku         String        @unique
+  supplier    User          @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  supplierId  String
+  orderItems  OrderItem[]
+  reviews     ProductReview[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([supplierId])
+}
+
+model ProductReview {
+  id        String   @id @default(uuid())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  buyer     User     @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  buyerId   String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  @@unique([productId, buyerId])
+  @@index([productId])
+  @@index([buyerId])
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  DELIVERED
+  CANCELLED
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  buyer     User        @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  buyerId   String
+  items     OrderItem[]
+  status    OrderStatus @default(PENDING)
+  total     Decimal     @db.Decimal(10, 2)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([buyerId])
+}
+
+model OrderItem {
+  id          String   @id @default(uuid())
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productId   String
+  quantity    Int
+  priceAtTime Decimal  @db.Decimal(10, 2)
+  createdAt   DateTime @default(now())
+
+  @@index([orderId])
+  @@index([productId])
 }
 
