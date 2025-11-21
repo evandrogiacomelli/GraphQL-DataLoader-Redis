@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql'
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Dependents {
@@ -12,5 +12,5 @@ export class Dependents {
   email: string;
 
   @Field()
-  createdAt: Date
+  createdAt: Date;
 }
