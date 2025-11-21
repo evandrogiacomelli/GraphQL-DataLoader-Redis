@@ -1,0 +1,248 @@
+{
+  "dashboard": {
+    "title": "NestJS Loaders Metrics",
+    "tags": ["loaders", "cache", "performance"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 0,
+    "refresh": "5s",
+    "editable": true,
+    "panels": [
+      {
+        "id": 1,
+        "title": "Cache Hit Rate (%)",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "loader_cache_hit_rate",
+            "legendFormat": "{{loader}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          { "format": "percent", "min": 0, "max": 100 },
+          { "format": "short" }
+        ],
+        "lines": true,
+        "fill": 1,
+        "linewidth": 2,
+        "pointradius": 5,
+        "legend": { "show": true }
+      },
+      {
+        "id": 2,
+        "title": "Average Latency (ms)",
+        "type": "graph",
+        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "loader_avg_latency_ms",
+            "legendFormat": "{{loader}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          { "format": "ms", "min": 0 },
+          { "format": "short" }
+        ],
+        "lines": true,
+        "fill": 1,
+        "linewidth": 2,
+        "pointradius": 5,
+        "legend": { "show": true }
+      },
+      {
+        "id": 3,
+        "title": "Requests/sec",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 8, "w": 8, "h": 7 },
+        "targets": [
+          {
+            "expr": "rate(loader_requests_total[1m])",
+            "legendFormat": "{{loader}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          { "format": "reqps", "min": 0 },
+          { "format": "short" }
+        ],
+        "lines": true,
+        "fill": 1,
+        "linewidth": 2,
+        "legend": { "show": true }
+      },
+      {
+        "id": 4,
+        "title": "DB Queries/sec",
+        "type": "graph",
+        "gridPos": { "x": 8, "y": 8, "w": 8, "h": 7 },
+        "targets": [
+          {
+            "expr": "rate(loader_db_queries_total[1m])",
+            "legendFormat": "{{loader}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          { "format": "ops", "min": 0 },
+          { "format": "short" }
+        ],
+        "lines": true,
+        "fill": 1,
+        "linewidth": 2,
+        "legend": { "show": true }
+      },
+      {
+        "id": 5,
+        "title": "Total Requests",
+        "type": "singlestat",
+        "gridPos": { "x": 16, "y": 8, "w": 4, "h": 3 },
+        "targets": [
+          {
+            "expr": "sum(loader_requests_total)",
+            "refId": "A"
+          }
+        ],
+        "format": "short",
+        "valueName": "current",
+        "sparkline": { "show": true }
+      },
+      {
+        "id": 6,
+        "title": "Cache Hits",
+        "type": "singlestat",
+        "gridPos": { "x": 20, "y": 8, "w": 4, "h": 3 },
+        "targets": [
+          {
+            "expr": "sum(loader_cache_hit_total)",
+            "refId": "A"
+          }
+        ],
+        "format": "short",
+        "valueName": "current",
+        "sparkline": { "show": true },
+        "colors": ["#299c46", "#e0b400", "#bf1b00"]
+      },
+      {
+        "id": 7,
+        "title": "Cache Misses",
+        "type": "singlestat",
+        "gridPos": { "x": 16, "y": 11, "w": 4, "h": 3 },
+        "targets": [
+          {
+            "expr": "sum(loader_cache_miss_total)",
+            "refId": "A"
+          }
+        ],
+        "format": "short",
+        "valueName": "current",
+        "sparkline": { "show": true },
+        "colors": ["#bf1b00", "#e0b400", "#299c46"]
+      },
+      {
+        "id": 8,
+        "title": "DB Queries",
+        "type": "singlestat",
+        "gridPos": { "x": 20, "y": 11, "w": 4, "h": 3 },
+        "targets": [
+          {
+            "expr": "sum(loader_db_queries_total)",
+            "refId": "A"
+          }
+        ],
+        "format": "short",
+        "valueName": "current",
+        "sparkline": { "show": true }
+      },
+      {
+        "id": 9,
+        "title": "Loaders Stats Table",
+        "type": "table",
+        "gridPos": { "x": 0, "y": 15, "w": 24, "h": 8 },
+        "targets": [
+          {
+            "expr": "loader_cache_hit_rate",
+            "format": "table",
+            "instant": true,
+            "refId": "A"
+          },
+          {
+            "expr": "loader_requests_total",
+            "format": "table",
+            "instant": true,
+            "refId": "B"
+          },
+          {
+            "expr": "loader_cache_hit_total",
+            "format": "table",
+            "instant": true,
+            "refId": "C"
+          },
+          {
+            "expr": "loader_cache_miss_total",
+            "format": "table",
+            "instant": true,
+            "refId": "D"
+          },
+          {
+            "expr": "loader_avg_latency_ms",
+            "format": "table",
+            "instant": true,
+            "refId": "E"
+          },
+          {
+            "expr": "loader_db_queries_total",
+            "format": "table",
+            "instant": true,
+            "refId": "F"
+          }
+        ],
+        "styles": [
+          {
+            "pattern": "loader",
+            "type": "string",
+            "alias": "Loader"
+          },
+          {
+            "pattern": "Value #A",
+            "type": "number",
+            "alias": "Hit Rate (%)",
+            "decimals": 2,
+            "unit": "percent"
+          },
+          {
+            "pattern": "Value #B",
+            "type": "number",
+            "alias": "Total Requests"
+          },
+          {
+            "pattern": "Value #C",
+            "type": "number",
+            "alias": "Hits"
+          },
+          {
+            "pattern": "Value #D",
+            "type": "number",
+            "alias": "Misses"
+          },
+          {
+            "pattern": "Value #E",
+            "type": "number",
+            "alias": "Avg Latency (ms)",
+            "decimals": 2,
+            "unit": "ms"
+          },
+          {
+            "pattern": "Value #F",
+            "type": "number",
+            "alias": "DB Queries"
+          }
+        ],
+        "transform": "table"
+      }
+    ]
+  },
+  "overwrite": true
+}
