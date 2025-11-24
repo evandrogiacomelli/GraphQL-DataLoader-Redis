@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import path from 'node:path';
 
 import { DatabaseModule } from '@/infrastructure/database/database.module';
@@ -10,6 +12,8 @@ import { CacheModuleMultiLayer } from '@/infrastructure/cache/cache.module.multi
 import { MetricsController } from '@/infrastructure/loaders/metrics/MetricsController';
 import { HealthController } from '@/infrastructure/health/health.controller';
 import { JsonPlaceholderModule } from '@/infrastructure/external/jsonplaceholder/jsonplaceholder.module';
+import { MonitoringModule } from '@/infrastructure/monitoring/monitoring.module';
+import { RequestFingerprintInterceptor } from '@/infrastructure/monitoring/interceptors/request-fingerprint.interceptor';
 
 import { UserModule } from '@/modules/user/user.module';
 import { DependentModule } from '@/modules/dependent/dependent.module';
@@ -29,6 +33,10 @@ import { AppResolver } from './app.resolver';
       driver: ApolloDriver,
       autoSchemaFile: path.resolve(process.cwd(), './src/schema.gql'),
     }),
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(process.cwd(), './public'),
+      serveRoot: '/dashboard',
+    }),
     UserModule,
     DependentModule,
     PostModule,
@@ -38,8 +46,16 @@ import { AppResolver } from './app.resolver';
     OrderModule,
     CacheModule,
     CacheModuleMultiLayer,
+    MonitoringModule,
   ],
   controllers: [MetricsController, HealthController],
-  providers: [AppService, AppResolver],
+  providers: [
+    AppService,
+    AppResolver,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: RequestFingerprintInterceptor,
+    },
+  ],
 })
 export class AppModule {}
