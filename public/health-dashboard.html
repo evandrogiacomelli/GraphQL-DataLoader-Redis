@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Score Dashboard</title>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 2rem;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+    h1 { margin-bottom: 2rem; font-size: 2rem; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .card {
+      background: #1e293b;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .score {
+      font-size: 4rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 1rem 0;
+    }
+    .score.healthy { color: #10b981; }
+    .score.warning { color: #f59e0b; }
+    .score.critical { color: #ef4444; }
+    .metric { display: flex; justify-content: space-between; padding: 0.5rem 0; }
+    .metric-label { color: #94a3b8; }
+    .metric-value { font-weight: 600; }
+    .anomaly {
+      background: #312e81;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border-radius: 0.25rem;
+      border-left: 3px solid #ef4444;
+    }
+    .anomaly-type { font-weight: 600; color: #ef4444; text-transform: uppercase; font-size: 0.75rem; }
+    .anomaly-message { margin-top: 0.25rem; }
+    .chart-container { position: relative; height: 300px; }
+    .no-anomalies { text-align: center; color: #64748b; padding: 2rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Application Health Score</h1>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Current Score</h2>
+        <div id="score" class="score healthy">100</div>
+        <div class="metric">
+          <span class="metric-label">Status</span>
+          <span id="status" class="metric-value">Healthy</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Metrics</h2>
+        <div class="metric">
+          <span class="metric-label">Unique Patterns</span>
+          <span id="uniqueFingerprints" class="metric-value">0</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Total Requests</span>
+          <span id="totalRequests" class="metric-value">0</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Error Rate</span>
+          <span id="errorRate" class="metric-value">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Score History</h2>
+      <div class="chart-container">
+        <canvas id="scoreChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Anomalies</h2>
+      <div id="anomalies" class="no-anomalies">No anomalies detected</div>
+    </div>
+  </div>
+
+  <script>
+    const socket = io('http://localhost:3000/health');
+
+    const ctx = document.getElementById('scoreChart').getContext('2d');
+    const scoreData = [];
+    const labels = [];
+    const maxDataPoints = 60;
+
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Health Score',
+          data: scoreData,
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          borderWidth: 2,
+          tension: 0.4,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { min: 0, max: 100, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+          x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8', maxRotation: 0 } }
+        },
+        plugins: {
+          legend: { labels: { color: '#e2e8f0' } }
+        },
+        animation: { duration: 0 }
+      }
+    });
+
+    socket.on('health-update', (data) => {
+      updateScore(data.score);
+      updateMetrics(data.metrics);
+      updateAnomalies(data.anomalies);
+      updateChart(data.score);
+    });
+
+    function updateScore(score) {
+      const scoreEl = document.getElementById('score');
+      const statusEl = document.getElementById('status');
+
+      scoreEl.textContent = score;
+      scoreEl.className = 'score ' + getScoreClass(score);
+      statusEl.textContent = getStatusText(score);
+    }
+
+    function updateMetrics(metrics) {
+      document.getElementById('uniqueFingerprints').textContent = metrics.uniqueFingerprints;
+      document.getElementById('totalRequests').textContent = metrics.totalRequests;
+      document.getElementById('errorRate').textContent = (metrics.errorRate * 100).toFixed(1) + '%';
+    }
+
+    function updateAnomalies(anomalies) {
+      const container = document.getElementById('anomalies');
+
+      if (anomalies.length === 0) {
+        container.innerHTML = '<div class="no-anomalies">No anomalies detected</div>';
+        return;
+      }
+
+      container.innerHTML = anomalies.map(a => `
+        <div class="anomaly">
+          <div class="anomaly-type">${a.type} - ${a.severity}</div>
+          <div class="anomaly-message">${a.message}</div>
+        </div>
+      `).join('');
+    }
+
+    function updateChart(score) {
+      const now = new Date().toLocaleTimeString();
+
+      labels.push(now);
+      scoreData.push(score);
+
+      if (labels.length > maxDataPoints) {
+        labels.shift();
+        scoreData.shift();
+      }
+
+      chart.update();
+    }
+
+    function getScoreClass(score) {
+      if (score >= 80) return 'healthy';
+      if (score >= 50) return 'warning';
+      return 'critical';
+    }
+
+    function getStatusText(score) {
+      if (score >= 80) return 'Healthy';
+      if (score >= 50) return 'Degraded';
+      return 'Critical';
+    }
+  </script>
+</body>
+</html>
